@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,13 +40,23 @@ public class IndexController {
 	
 
 	/* Serviço RESTful */
-	@GetMapping(value = "/{id}", produces = "application/json")
-	public ResponseEntity<Usuario> init(@PathVariable (value = "id") Long id) {
+	@GetMapping(value = "v1/{id}", produces = "application/json")
+	public ResponseEntity<Usuario> initv1(@PathVariable (value = "id") Long id) {
 		
 		Optional<Usuario> usuario = usuarioRepository.findById(id);
-		
+		System.out.println("executando versao 1");
 		return new ResponseEntity<Usuario>(usuario.get(), HttpStatus.OK);
 	}
+	/* Serviço RESTful */
+	@GetMapping(value = "v2/{id}", produces = "application/json")
+	public ResponseEntity<Usuario> initv2(@PathVariable (value = "id") Long id) {
+		
+		Optional<Usuario> usuario = usuarioRepository.findById(id);
+		System.out.println("executando versao 1");
+
+		return new ResponseEntity<Usuario>(usuario.get(), HttpStatus.OK);
+	}
+	
 	
 	@DeleteMapping(value = "/{id}", produces = "application/text")
 	public String delete (@PathVariable("id") Long id){
@@ -80,12 +91,11 @@ public class IndexController {
 		for (int pos = 0; pos < usuario.getTelefones().size(); pos ++) {
 			usuario.getTelefones().get(pos).setUsuario(usuario);
 		}
-		
+		String senha = new BCryptPasswordEncoder().encode(usuario.getSenha());
+		usuario.setSenha(senha);
 		Usuario usuarioSalvo = usuarioRepository.save(usuario);
-		
 		return new ResponseEntity<Usuario>(usuarioSalvo, HttpStatus.OK);
-		
-	}
+		}
 	
 	
 	@PutMapping(value = "/", produces = "application/json")
@@ -96,9 +106,14 @@ public class IndexController {
 		for (int pos = 0; pos < usuario.getTelefones().size(); pos ++) {
 			usuario.getTelefones().get(pos).setUsuario(usuario);
 		}
+		Usuario userTemp= usuarioRepository.findUserByLogin(usuario.getLogin());
+		
+		if(!userTemp.getSenha().equals(usuario.getSenha())) {
+		String senha = new BCryptPasswordEncoder().encode(usuario.getSenha());
+		usuario.setSenha(senha);
+		}
 		
 		Usuario usuarioSalvo = usuarioRepository.save(usuario);
-		
 		return new ResponseEntity<Usuario>(usuarioSalvo, HttpStatus.OK);
 		
 	}
