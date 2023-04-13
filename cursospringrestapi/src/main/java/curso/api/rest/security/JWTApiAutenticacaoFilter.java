@@ -14,20 +14,19 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.GenericFilterBean;
 
 /*filtro onde todas  as requisiçoes serao capturadas para autenticar*/
-public class JWTApiAutenticacaoFilter extends GenericFilterBean{
+public class JWTApiAutenticacaoFilter extends GenericFilterBean {
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
-		/*estabelece a autenticaçao para a requisiçao*/
-		Authentication authentication = new JWTTokenAutenticacaoService().
-				getAuthentication((HttpServletRequest)request,(HttpServletResponse)response);
-		/*coloca o processo no security*/
+		/* estabelece a autenticaçao para a requisiçao */
+		Authentication authentication = new JWTTokenAutenticacaoService()
+				.getAuthentication((HttpServletRequest) request, (HttpServletResponse) response);
+		/* coloca o processo no security */
 		SecurityContextHolder.getContext().setAuthentication(authentication);
-		/*agora iremos continuar o processo*/
+		/* agora iremos continuar o processo */
 		chain.doFilter(request, response);
-		
-		
+
 	}
 
 }
