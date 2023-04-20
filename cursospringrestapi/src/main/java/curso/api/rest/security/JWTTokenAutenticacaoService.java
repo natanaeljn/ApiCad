@@ -43,10 +43,15 @@ public class JWTTokenAutenticacaoService {
 		ApplicationContextLoad.getApplicationContext().getBean(UsuarioRepository.class).atualizaTokenUsuario(username,
 				JWT);
 		
-		response.addHeader("Access-Control-Allow-Origin", "*");
+		/* liberando portas diferentes que acessao a api, ou clientes web */
+		liberaCorsUm(response);
+		
+		
+		
+		
 
 		/* liberando portas diferentes que acessao a api, ou clientes web */
-		liberacaoCors(response);
+		
 		
 		
 
@@ -92,29 +97,27 @@ public class JWTTokenAutenticacaoService {
 
 			}
 		}
-		liberacaoCors(response);
-		response.addHeader("Access-Control-Allow-Origin", "*");
+		
+		liberaCorsUm(response);
+		
         return null;/* nao autorizado */
 
 	}
 
-	private void liberacaoCors(HttpServletResponse response) {
-		if (response.getHeader("Access-Control-Allow-Origin") == null) {
+	private void liberaCorsUm(HttpServletResponse response) {
+		if(response.getHeader("Access-Control-Allow-Origin")==null) {
 			response.addHeader("Access-Control-Allow-Origin", "*");
+			
 		}
-
-		if (response.getHeader("Access-Control-Allow-Headers") == null) {
+		if(response.getHeader("Access-Control-Allow-Headers")==null) {
 			response.addHeader("Access-Control-Allow-Headers", "*");
+			
 		}
-
-		if (response.getHeader("Access-Control-Request-Headers") == null) {
-			response.addHeader("Access-Control-Request-Headers", "*");
+		if(response.getHeader("Access-Control-Allow-Methods")==null) {
+			response.addHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS,DELETE,PUT");
 		}
-
-		if (response.getHeader("Access-Control-Allow-Methods") == null) {
-			response.addHeader("Access-Control-Allow-Methods", "*");
-		}
-
+		response.setStatus(200);
 	}
+	
 
 }

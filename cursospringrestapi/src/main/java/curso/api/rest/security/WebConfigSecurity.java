@@ -34,6 +34,8 @@ public class WebConfigSecurity extends WebSecurityConfigurerAdapter {
 				 * sistema.com.br/index
 				 */
 				.disable().authorizeRequests().antMatchers("/").permitAll().antMatchers("/index").permitAll()
+				
+				
 
 				.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
